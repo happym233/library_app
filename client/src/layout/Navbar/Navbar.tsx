@@ -1,9 +1,12 @@
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
+
 export default function NavBar() {
+  const navigate = useNavigate();
   return (
     <>
       <nav className="navbar navbar-expand-lg navbar-dark main-color py-3">
         <div className="container-fluid">
-          <span className="navbar-brand">Luv 2 Read</span>
+          <span className="navbar-brand">Happy Read</span>
           <button
             className="navbar-toggler"
             type="button"
@@ -18,15 +21,15 @@ export default function NavBar() {
           <div className="collapse navbar-collapse" id="navbarNavDropdown">
             <ul className="navbar-nav">
               <li className="nav-item">
-                <a className="nav-link" href="#">
+                <NavLink className="nav-link" to="/">
                   Home
-                </a>
+                </NavLink>
               </li>
 
               <li className="nav-item">
-                <a className="nav-link" href="#">
+                <NavLink className="nav-link" to="/search">
                   Search Book
-                </a>
+                </NavLink>
               </li>
             </ul>
 
