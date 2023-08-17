@@ -62,8 +62,6 @@ export default function SearchBooksPage() {
         };
       });
     }
-    console.log(search);
-    console.log(urlParams);
   }
 
   function updateBooks() {

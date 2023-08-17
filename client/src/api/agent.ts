@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import { PageParams } from "../models/PageParams";
-import { URLPageParams } from "../models/URLOffsetPageParam";
+import { ReviewPageParams, URLPageParams } from "../models/URLOffsetPageParam";
 
 axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 // axios.defaults.withCredentials = true;
@@ -20,4 +20,8 @@ const Book = {
     listsWithURL: (params?: URLPageParams) => requests.get("books/search/findByTitleCategory", params)
 }
 
-export const agent = { Book };
+const Review = {
+    getByBookId: (params?: ReviewPageParams) => requests.get("reviews/search/findByBookId", params)
+}
+
+export const agent = { Book, Review };

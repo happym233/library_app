@@ -1,6 +1,10 @@
-export interface URLPageParams {
+import { PageParams } from "./PageParams";
+
+export interface URLPageParams extends PageParams {
     title?: string | null;
     category?: string | null;
-    page: number;
-    size: number;
+}
+
+export interface ReviewPageParams extends PageParams { 
+    book_id: number;
 }

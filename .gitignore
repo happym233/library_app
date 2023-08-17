@@ -1,1 +1,4 @@
 API/libraryApp/src/main/resources/application.properties
+client/src/lib/oktaConfig.ts
+client/.env.development
+client/.env.development
