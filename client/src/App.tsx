@@ -13,12 +13,13 @@ import { Security } from "@okta/okta-react";
 function App() {
   const oktaAuth = new OktaAuth(oktaConfig);
   const navigate = useNavigate();
+  const location = useLocation();
   const customAuthHandler = () => {
     navigate("/login");
   };
 
   const restoreOriginUr = async (_oktaAuth: any, originUri: any) => {
-    navigate(toRelativeUrl(originUri || "/", window.location.origin));
+    navigate(location.state?.from || "/");
   };
   return (
     <Security

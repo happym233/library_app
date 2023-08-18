@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import BookModel from "../../models/BookModel";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { agent } from "../../api/agent";
 import NotFound from "../../errors/NotFound";
 import SpinnerLoading from "../../errors/SpinnerLoading";
@@ -12,15 +12,27 @@ import { error } from "console";
 import { set } from "lodash";
 import ReviewComponent from "./components/Review";
 import LastestReviews from "./LatestReviews";
+import { useOktaAuth } from "@okta/okta-react";
+import ReviewRequest from "../../models/ReviewRequest";
 
 export default function BookCheckoutPage() {
+  const navigate = useNavigate();
+  const { authState } = useOktaAuth();
   const { bookId } = useParams<{ bookId: string }>();
   const [book, setBook] = useState<BookModel>();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [httpError, setHttpError] = useState<string>("");
   const [reviews, setReviews] = useState<Review[]>([]);
   const [totalStarts, setTotalStars] = useState(0);
-  const [isLoadingReview, setIsLoadingReview] = useState(true);
+  const [isLoadingReview, setIsLoadingReview] = useState(false);
+  const [currentLoansCount, setCurrentLoansCount] = useState(0);
+  const [isLoadingCurrentLoansCount, setIsLoadingCurrentLoansCount] =
+    useState(false);
+  const [isCheckedOut, setIsCheckedOut] = useState(false);
+  const [isLoadingCheckedOut, setIsLoadingBookCheckedOut] = useState(false);
+
+  const [isReviewLeft, setIsReviewLeft] = useState(false);
+  const [isLoadingUserReview, setIsLoadingUserReview] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -46,7 +58,7 @@ export default function BookCheckoutPage() {
         setLoading(false);
         window.scrollTo(0, 0);
       });
-  }, []);
+  }, [isCheckedOut]);
 
   useEffect(() => {
     setIsLoadingReview(true);
@@ -75,9 +87,106 @@ export default function BookCheckoutPage() {
       });
   }, []);
 
+  useEffect(() => {
+    if (!authState || !authState.isAuthenticated) return;
+    setIsLoadingCurrentLoansCount(true);
+    agent.Book.getCurrentLoansCount({
+      Authorization: `Bearer ${authState?.accessToken?.accessToken}`,
+      "Content-Type": "application/json",
+    })
+      .then(async (response) => {
+        setCurrentLoansCount(parseInt(response));
+      })
+      .catch((error: any) => {
+        if (error.response.status === 401) navigate("/login");
+        setHttpError(error.message);
+      })
+      .finally(() => {
+        setIsLoadingCurrentLoansCount(false);
+      });
+  }, [authState, isCheckedOut]);
+
+  useEffect(() => {
+    if (!bookId) return;
+    if (authState && authState.isAuthenticated) {
+      setIsLoadingBookCheckedOut(true);
+      agent.Book.getUserCheckedOut(
+        {
+          bookId: bookId,
+        },
+        {
+          Authorization: `Bearer ${authState.accessToken?.accessToken}`,
+          "Content-Type": "application/json",
+        }
+      )
+        .then((response) => {
+          setIsCheckedOut(response);
+        })
+        .catch((error) => {
+          setHttpError(error.message);
+        })
+        .finally(() => {
+          setIsLoadingBookCheckedOut(false);
+        });
+    }
+  }, [authState, bookId, isCheckedOut]);
+
+  useEffect(() => {
+    if (!authState || !authState.isAuthenticated) return;
+    setIsLoadingUserReview(true);
+    agent.Review.getReviewBookByUser(parseInt(bookId!), authState)
+      .then((response) => {
+        setIsReviewLeft(response);
+      })
+      .catch((error) => {
+        setHttpError(error.message);
+      })
+      .finally(() => {
+        setIsLoadingUserReview(false);
+      });
+  }, [authState]);
+
+  const checkoutBook = async () => {
+    if (!bookId) return;
+    agent.Book.checkOutBook(parseInt(bookId!), authState)
+      .then((response) => {
+        setIsCheckedOut(true);
+      })
+      .catch((error) => {
+        console.log(error.message);
+      })
+      .finally(() => {});
+  };
+
+  async function submitReview(starInput: number, reviewDescription: string) {
+    let bookId: number = 0;
+    if (book?.id) {
+      bookId = book.id;
+    }
+    const reviewRequest = new ReviewRequest(
+      starInput,
+      bookId,
+      reviewDescription
+    );
+    agent.Review.postReview(reviewRequest, authState)
+      .then((response) => {
+        setIsReviewLeft(true);
+      })
+      .catch((error: any) => {
+        console.log(error);
+      });
+  }
+
   if (!bookId) return <ErrorPage message="Book not found" />;
 
-  if (loading || isLoadingReview) return <SpinnerLoading />;
+  if (
+    loading ||
+    isLoadingReview ||
+    isLoadingCurrentLoansCount ||
+    isLoadingCheckedOut ||
+    isLoadingUserReview
+  )
+    return <SpinnerLoading />;
 
   if (httpError) return <ErrorPage message={httpError} />;
 
@@ -105,7 +214,16 @@ export default function BookCheckoutPage() {
               <p className="lead">{book?.description}</p>
             </div>
           </div>
-          <CheckoutAndReviewBox book={book} mobile={false} />
+          <CheckoutAndReviewBox
+            book={book}
+            mobile={false}
+            currentLoanCount={currentLoansCount}
+            isAuthenticated={authState?.isAuthenticated}
+            isCheckedOut={isCheckedOut}
+            checkoutBook={checkoutBook}
+            isReviewLeft={isReviewLeft}
+            submitReview={submitReview}
+          />
         </div>
         <hr />
         <LastestReviews
@@ -131,11 +249,20 @@ export default function BookCheckoutPage() {
             <h2>{book?.title}</h2>
             <h5 className="text-primary">{book?.author}</h5>
             <p className="lead">{book?.description}</p>
-            <StarsReview rating={4} size={24} />
+            <StarsReview rating={totalStarts} size={24} />
           </div>
         </div>
 
-        <CheckoutAndReviewBox book={book} mobile={true} />
+        <CheckoutAndReviewBox
+          book={book}
+          mobile={true}
+          currentLoanCount={currentLoansCount}
+          isAuthenticated={authState?.isAuthenticated}
+          isCheckedOut={isCheckedOut}
+          checkoutBook={checkoutBook}
+          isReviewLeft={isReviewLeft}
+          submitReview={submitReview}
+        />
         <hr />
         <LastestReviews
           reviews={reviews}

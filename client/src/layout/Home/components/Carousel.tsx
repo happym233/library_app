@@ -30,7 +30,7 @@ export default function Carousel() {
           });
         }
         setBooks(loadedBooks);
-        console.log(books);
+        // console.log(books);
         setIsLoading(false);
       })
       .catch((error: any) => {
@@ -59,21 +59,27 @@ export default function Carousel() {
           <div className="carousel-item active">
             <div className="row d-flex justify-content-center align-items-center">
               {books &&
-                books.slice(0, 3).map((book) => <ReturnBook book={book} />)}
+                books
+                  .slice(0, 3)
+                  .map((book) => <ReturnBook book={book} key={book.id} />)}
             </div>
           </div>
 
           <div className="carousel-item">
             <div className="row d-flex justify-content-center align-items-center">
               {books &&
-                books.slice(3, 6).map((book) => <ReturnBook book={book} />)}
+                books
+                  .slice(3, 6)
+                  .map((book) => <ReturnBook book={book} key={book.id} />)}
             </div>
           </div>
 
           <div className="carousel-item">
             <div className="row d-flex justify-content-center align-items-center">
               {books &&
-                books.slice(6, 9).map((book) => <ReturnBook book={book} />)}
+                books
+                  .slice(6, 9)
+                  .map((book) => <ReturnBook book={book} key={book.id} />)}
             </div>
           </div>
         </div>

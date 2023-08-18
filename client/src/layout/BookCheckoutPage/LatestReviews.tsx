@@ -28,7 +28,7 @@ export default function LastestReviews({ reviews, bookId, mobile }: Props) {
               <Link
                 type="button"
                 className="btn main-color btn-md text-white"
-                to="#"
+                to={`/reviewlist/${bookId}`}
               >
                 Reach all reviews.
               </Link>
