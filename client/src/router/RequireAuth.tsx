@@ -4,7 +4,11 @@ import { toRelativeUrl } from "@okta/okta-auth-js";
 import { Outlet, useNavigate } from "react-router-dom";
 import SpinnerLoading from "../errors/SpinnerLoading";
 
-export default function RequiredAuth() {
+interface Props {
+  admin?: boolean;
+}
+
+export default function RequiredAuth({ admin }: Props) {
   const { oktaAuth, authState } = useOktaAuth();
   const navigate = useNavigate();
 
@@ -20,6 +24,10 @@ export default function RequiredAuth() {
       );
       oktaAuth.setOriginalUri(originalUri);
       navigate("/login");
+    }
+
+    if (admin && authState.accessToken?.claims.userType === undefined) {
+      navigate("/home");
     }
   }, [oktaAuth, !!authState, authState?.isAuthenticated]);
 

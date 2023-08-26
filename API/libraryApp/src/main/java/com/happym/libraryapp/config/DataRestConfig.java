@@ -1,6 +1,7 @@
 package com.happym.libraryapp.config;
 
 import com.happym.libraryapp.entity.Book;
+import com.happym.libraryapp.entity.Message;
 import com.happym.libraryapp.entity.Review;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
@@ -24,9 +25,11 @@ public class DataRestConfig implements RepositoryRestConfigurer {
 
         config.exposeIdsFor(Book.class);
         config.exposeIdsFor(Review.class);
+        config.exposeIdsFor(Message.class);
 
         disableHttpMethods(Book.class, config, theUnsupportedActions);
         disableHttpMethods(Review.class, config, theUnsupportedActions);
+        disableHttpMethods(Message.class, config, theUnsupportedActions);
 
         cors.addMapping(config.getBasePath() + "/**")
                 .allowedOrigins(allowedOrigins);

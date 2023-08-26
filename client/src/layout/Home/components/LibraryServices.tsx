@@ -19,7 +19,7 @@ export default function LibraryServices() {
               <Link
                 type="button"
                 className="btn main-color btn-lg text-white"
-                to="search"
+                to="/messages"
               >
                 Library Services
               </Link>

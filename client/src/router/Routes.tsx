@@ -11,6 +11,9 @@ import { LoginCallback } from "@okta/okta-react";
 import ReviewListPage from "../layout/ReviewListPage/ReviewListPage";
 import RequiredAuth from "./RequireAuth";
 import { ShelfPage } from "../layout/ShelfPage/ShelfPage";
+import MessagesPage from "../layout/MessagesPage/MessagesPage";
+import ManageLibraryPage from "../layout/ManageLibraryPage/ManageLibraryPage";
+import { Children } from "react";
 
 export const router = createBrowserRouter([
   {
@@ -19,7 +22,14 @@ export const router = createBrowserRouter([
     children: [
       {
         element: <RequiredAuth />,
-        children: [{ path: "/shelf", element: <ShelfPage /> }],
+        children: [
+          { path: "/shelf", element: <ShelfPage /> },
+          { path: "/messages", element: <MessagesPage /> },
+        ],
+      },
+      {
+        element: <RequiredAuth admin />,
+        children: [{ path: "/admin", element: <ManageLibraryPage /> }],
       },
       {
         path: "/",

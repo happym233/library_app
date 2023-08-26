@@ -3,6 +3,8 @@ import { PageParams } from "../models/PageParams";
 import { ReviewPageParams, URLPageParams } from "../models/URLOffsetPageParam";
 import { url } from "inspector";
 import ReviewRequest from "../models/ReviewRequest";
+import MessageModel from "../models/Message";
+import AdminMessageRequest from "../models/AdminMessageRequest";
 
 axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 
@@ -25,6 +27,22 @@ const Book = {
         Authorization: `Bearer ${authState?.accessToken?.accessToken}`,
         'Content-Type': 'application/json'
     }),
+    fetchUserCurrentLoans: (authState: any) => requests.get("books/secure/currentLoans", {}, {
+        Authorization: `Bearer ${authState?.accessToken?.accessToken}`,
+        'Content-Type': 'application/json'
+    }),
+    returnBook: (bookId: number, authState: any) => requests.put("books/secure/return", {}, { bookId }, {
+        Authorization: `Bearer ${authState?.accessToken?.accessToken}`,
+        'Content-Type': 'application/json'
+    }),
+    renewLoan: (bookId: number, authState: any) => requests.put("books/secure/renew/loan", {}, { bookId }, {
+        Authorization: `Bearer ${authState?.accessToken?.accessToken}`,
+        'Content-Type': 'application/json'
+    }),
+    findHistoryByEmail: (params: any, authState: any) => requests.get("histories/search/findBooksByUserEmail/", params, {
+        Authorization: `Bearer ${authState?.accessToken?.accessToken}`,
+        'Content-Type': 'application/json'
+    }),
 }
 
 const Review = {
@@ -39,4 +57,23 @@ const Review = {
     }),
 }
 
-export const agent = { Book, Review };
+const Message = {
+    addMessage: (messageRequestModel: MessageModel, authState: any) => requests.post("messages/secure/add/message", messageRequestModel, {}, {
+        Authorization: `Bearer ${authState?.accessToken?.accessToken}`,
+        'Content-Type': 'application/json'
+    }),
+    fetchUserMessages: (params: any, authState: any) => requests.get("messages/search/findByUserEmail", params, {
+        Authorization: `Bearer ${authState?.accessToken?.accessToken}`,
+        'Content-Type': 'application/json'
+    }),
+    findByClosed: (params: any, authState: any) => requests.get("messages/search/findByClosed", params, {
+        Authorization: `Bearer ${authState?.accessToken?.accessToken}`,
+        'Content-Type': 'application/json'
+    }),
+    putAdminMessage: (messageAdminRequestData: AdminMessageRequest, authState: any) => requests.put("messages/secure/admin/message", JSON.stringify(messageAdminRequestData), {}, {
+        Authorization: `Bearer ${authState?.accessToken?.accessToken}`,
+        'Content-Type': 'application/json'
+    })
+}
+
+export const agent = { Book, Review, Message };

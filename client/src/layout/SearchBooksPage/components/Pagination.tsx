@@ -45,6 +45,7 @@ export default function Pagination({
   }
 
   function resetPageArrMinus() {
+    if (currentPage === 1) return;
     let minPageNum = pagesArr[0],
       highPageNum = pagesArr[pagesArr.length - 1];
     if (minPageNum > 1) {
@@ -61,6 +62,7 @@ export default function Pagination({
   }
 
   function resetPageArrAdd() {
+    if (currentPage === pagesArr.length) return;
     let minPageNum = pagesArr[0],
       highPageNum = pagesArr[pagesArr.length - 1];
     if (highPageNum < totalPages) {
