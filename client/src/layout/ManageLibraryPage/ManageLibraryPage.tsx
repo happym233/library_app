@@ -1,6 +1,7 @@
 import { useOktaAuth } from "@okta/okta-react";
 import { useState } from "react";
 import AdminMessages from "./components/AdminMessages";
+import AddNewBook from "./components/AddNewBook";
 
 export default function ManageLibraryPage() {
   const { authState } = useOktaAuth();
@@ -43,6 +44,7 @@ export default function ManageLibraryPage() {
             >
               Add new book
             </button>
+            {/*
             <button
               onClick={changeQuantityOfBooksClickFunction}
               className="nav-link"
@@ -56,6 +58,7 @@ export default function ManageLibraryPage() {
             >
               Change Quantity
             </button>
+  */}
             <button
               onClick={messageClickFunction}
               className="nav-link"
@@ -78,15 +81,7 @@ export default function ManageLibraryPage() {
             role="tabpanel"
             aria-labelledby="nav-add-book-tab"
           >
-            Add new book
-          </div>
-          <div
-            className="tab-pane fade"
-            id="nav-quantity"
-            role="tabpanel"
-            aria-labelledby="nav-quantity-tab"
-          >
-            {changeQuantityOfBooksClick && <>Change Quantity</>}
+            <AddNewBook />
           </div>
           <div
             className="tab-pane fade"

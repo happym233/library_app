@@ -5,6 +5,7 @@ import { url } from "inspector";
 import ReviewRequest from "../models/ReviewRequest";
 import MessageModel from "../models/Message";
 import AdminMessageRequest from "../models/AdminMessageRequest";
+import AddBookRequest from "../models/AddBookRequest";
 
 axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 
@@ -14,7 +15,7 @@ const requests = {
     get: (url: string, params?: any, headers?: any) => axios.get(url, { params:  params, headers:  headers }).then(responseBody),
     post: (url: string, body: {}, params?: any, headers?: any) => axios.post(url, body, {params: params, headers: headers}).then(responseBody),
     put: (url: string, body: {}, params?: any, headers?: any) => axios.put(url, body, {params: params, headers: headers }).then(responseBody),
-    delete: (url: string) => axios.delete(url).then(responseBody),
+    delete: (url: string, params?: any, headers?: any) => axios.delete(url, { params:  params, headers:  headers }).then(responseBody),
 }
 
 const Book = {
@@ -76,4 +77,23 @@ const Message = {
     })
 }
 
-export const agent = { Book, Review, Message };
+const Admin = {
+    addNewBook: (book: AddBookRequest, authState: any) => requests.post("/admin/secure/add/book", JSON.stringify(book), {}, {
+        Authorization: `Bearer ${authState?.accessToken?.accessToken}`,
+        'Content-Type': 'application/json'
+    }),
+    increaseQuantity: (bookId: number, authState: any) => requests.put("admin/secure/increase/book/quantity", {}, { bookId: bookId }, {
+        Authorization: `Bearer ${authState?.accessToken?.accessToken}`,
+        'Content-Type': 'application/json'
+    }),
+    decreaseQuantity: (bookId: number, authState: any) => requests.put("admin/secure/decrease/book/quantity", {}, { bookId: bookId }, {
+        Authorization: `Bearer ${authState?.accessToken?.accessToken}`,
+        'Content-Type': 'application/json'
+    }),
+    deleteBook: (bookId: number, authState: any) => requests.delete("admin/secure/delete/book",  { bookId: bookId }, {
+        Authorization: `Bearer ${authState?.accessToken?.accessToken}`,
+        'Content-Type': 'application/json'
+    }),
+}
+
+export const agent = { Book, Review, Message, Admin };

@@ -1,13 +1,16 @@
 import { Link } from "react-router-dom";
 import BookModel from "../../../models/BookModel";
 import StarsReview from "../../../components/StarsReview";
+import { useOktaAuth } from "@okta/okta-react";
+import ChangeQuantityOfBook from "../../ManageLibraryPage/components/ChangeQuantityOfBook";
 
 interface Props {
   book: BookModel;
-  key: number;
+  bookDelete: any;
 }
 
-export default function SearchBook({ book }: Props) {
+export default function SearchBook({ book, bookDelete }: Props) {
+  const { authState } = useOktaAuth();
   return (
     <div className="card mt-3 shadow p-3 mb-3 bg-body rounded">
       <div className="row g-0">
@@ -57,6 +60,9 @@ export default function SearchBook({ book }: Props) {
             View Details
           </Link>
         </div>
+        {authState && authState.accessToken?.claims.userType && (
+          <ChangeQuantityOfBook book={book} deleteBook={bookDelete} />
+        )}
       </div>
     </div>
   );

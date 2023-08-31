@@ -3,3 +3,6 @@ client/src/lib/oktaConfig.ts
 client/.env.development
 client/.env.development
 API/libraryApp/src/main/resources/application.properties
+client/ssl-localhost/localhost.key
+.gitignore
+API/libraryApp/src/main/resources/application.properties

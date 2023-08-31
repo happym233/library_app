@@ -49,6 +49,15 @@ export default function NavBar() {
                   </NavLink>
                 </li>
               )}
+
+              {authState.isAuthenticated &&
+                authState.accessToken?.claims.userType && (
+                  <li className="nav-item">
+                    <NavLink className="nav-link" to="admin">
+                      Admin
+                    </NavLink>
+                  </li>
+                )}
             </ul>
 
             <ul className="navbar-nav ms-auto">

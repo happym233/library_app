@@ -24,6 +24,7 @@ export default function SearchBooksPage() {
   const [search, setSearch] = useState<string>("");
   const [category, setCategory] = useState<string>("Category");
   const categoryMap = new Map<string, string>();
+  const [bookDelete, setBookDelete] = useState(false);
   categoryMap.set("all", "Category");
   categoryMap.set("fe", "Front End");
   categoryMap.set("be", "Back End");
@@ -32,7 +33,7 @@ export default function SearchBooksPage() {
 
   useEffect(() => {
     updateBooks();
-  }, [urlParams]);
+  }, [urlParams, bookDelete]);
 
   if (isLoading) return <SpinnerLoading />;
 
@@ -43,6 +44,8 @@ export default function SearchBooksPage() {
     booksPerPage * currentPage,
     totalAmountOfBooks
   );
+
+  const deleteBook = () => setBookDelete(!bookDelete);
 
   function searchHandleChange() {
     if (search === "") {
@@ -84,7 +87,6 @@ export default function SearchBooksPage() {
           });
         });
         setBooks(loadedBooks);
-        console.log(responseData.page.number + 1);
         setTotalAmountOfBooks(responseData.page.totalElements);
         setCurrentPage(responseData.page.number + 1);
         setTotalPages(responseData.page.totalPages);
@@ -206,7 +208,7 @@ export default function SearchBooksPage() {
                 items:
               </p>
               {books.map((book) => (
-                <SearchBook book={book} key={book.id} />
+                <SearchBook book={book} bookDelete={deleteBook} key={book.id} />
               ))}
 
               <Pagination
