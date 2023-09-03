@@ -6,7 +6,7 @@ import com.happym.libraryapp.utils.ExtractJWT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin("https://localhost:3000")
+@CrossOrigin("http://library.happym.me")
 @RestController
 @RequestMapping("/api/admin")
 public class AdminController {

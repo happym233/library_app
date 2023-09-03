@@ -40,6 +40,7 @@ export const router = createBrowserRouter([
       { path: "/checkout/:bookId", element: <BookCheckoutPage /> },
       { path: "/login", element: <LoginWidget config={oktaConfig} /> },
       { path: "/login/callback", element: <LoginCallback /> },
+      { path: "/login/oauth2/code/okta", element: <LoginCallback /> },
       { path: "/reviewlist/:bookId", element: <ReviewListPage /> },
       { path: "/not-found", element: <NotFound /> },
       { path: "*", element: <Navigate replace to="/not-found" /> },

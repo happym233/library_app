@@ -4,7 +4,6 @@ import SpinnerLoading from '../errors/SpinnerLoading'
 import OktaSignInWidget from './OktaSignInWidget';
 
 const LoginWidget = ({ config }) => {
-    const location = useLocation();
     const { oktaAuth, authState } = useOktaAuth();
     const onSuccess = (tokens) => {
         oktaAuth.handleLoginRedirect(tokens);
@@ -23,7 +22,7 @@ const LoginWidget = ({ config }) => {
     return authState.isAuthenticated ?
         <Navigate to={{ pathname: "/"} }/>
     :
-    <OktaSignInWidget config={config} onSuccess={onSuccess} onError={onError}/>;
+        <OktaSignInWidget config={ config} onSuccess={onSuccess} onError={onError}/>;
 };
 
 export default LoginWidget;

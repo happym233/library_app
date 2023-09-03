@@ -5,7 +5,7 @@ import com.happym.libraryapp.service.ReviewService;
 import com.happym.libraryapp.utils.ExtractJWT;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin("https://localhost:3000")
+@CrossOrigin("http://library.happym.me")
 @RestController
 @RequestMapping("/api/reviews")
 public class ReviewController {
